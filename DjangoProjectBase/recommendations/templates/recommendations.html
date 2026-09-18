@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+    <form action=""> <!-- envía el prompt a la misma página por GET, igual que la búsqueda de películas -->
+        <div class="mb-3">
+            <label for="prompt" class="form-label">
+                What kind of movie do you want to watch?
+            </label>
+            <input type="text" class="form-control" name="prompt" id="prompt" value="{{ prompt }}"
+                   placeholder="Película de la segunda guerra mundial" required/>
+        </div>
+        <button type="submit" class="btn btn-primary">Recommend</button>
+    </form>
+
+    {% if prompt %}
+    <p>Recommendation for: {{ prompt }}</p>
+    {% endif %}
+
+    {% if error %}
+    <div class="alert alert-danger" role="alert">{{ error }}</div>
+    {% elif movie %}
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="col">
+            <div class="card">
+                <img src="{{ movie.image.url }}" class="card-img-top" alt="{{ movie.title }}">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">{{ movie.title }}</h5>
+                    <p class="card-text">{{ movie.description }}</p>
+                    {% if movie.genre %}
+                    <p class="card-text">{{ movie.genre }}</p>
+                    {% endif %}
+                    {% if movie.year %}
+                    <p class="card-text">{{ movie.year }}</p>
+                    {% endif %}
+                    <p class="card-text"><small class="text-muted">Similarity: {{ similarity|floatformat:4 }}</small></p>
+                    {% if movie.url %}
+                    <a href="{{ movie.url }}" class="btn btn-primary">Movie Link</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% elif prompt %}
+    <p>No movies with embeddings were found to recommend.</p>
+    {% endif %}
+</div>
+
+{% endblock content %}
